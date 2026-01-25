@@ -13,7 +13,11 @@ namespace LegacyNetworking {
         }
         private static INetworkPrefabPool prefabPool;
         public static INetworkPrefabPool PrefabPool {
-            get; private set;
+            get => prefabPool;  set {
+                prefabPool.OnDisable();
+                prefabPool = value;
+                prefabPool.OnEnable();
+            }
         }
         public static Server Server {
             get; private set;
@@ -40,23 +44,6 @@ namespace LegacyNetworking {
         }
         public static bool NetConnect(string address, ushort maxConnectionAttempts = 5) {
             return Client.Connect(address, maxConnectionAttempts, (byte)NetworkHeaders.Group);
-        }
-
-        public static ushort NextId {
-            get; set;
-        }
-        public static Dictionary<ushort, NetworkView> Views {
-            get; set;
-        }
-        public static int AllocateView(NetworkView view) {
-            Views.Add(NextId, view);
-            view.ViewID = NextId;
-            NextId++;
-            return view.ViewID;
-        }
-
-        public static NetworkView GetView(ushort viewId) {
-            return Views[viewId];
         }
     }
 }

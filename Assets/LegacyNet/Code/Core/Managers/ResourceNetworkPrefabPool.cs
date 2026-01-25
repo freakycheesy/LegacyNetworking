@@ -1,6 +1,5 @@
 using Riptide;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace LegacyNetworking
 {
@@ -62,12 +61,10 @@ namespace LegacyNetworking
 
         private void SendSpawnMessageToClients(Message spawnMessage) {
             foreach (var connection in Network.Server.Clients) {
+                if (Network.Client.IsConnected && connection == Network.Client.Connection)
+                    continue;
                 InstantiateToConnection(connection.Id, spawnMessage);
             }
-        }
-
-        public void OnNewScene(Scene scene) {
-            foreach(var scene )
         }
 
         public void InstantiateToConnection(ushort connection, Message spawnMessage) {

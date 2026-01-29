@@ -12,8 +12,9 @@ It's free, it doesn't use a weaver, and it's simple like it should be!
 
 ## What can you do (should be would lol)
 
-Use NetworkView for your networked gameobjects, IObservable for syncing data, RPCs to send functions remotely over the network!<br>
-Spawn NetworkView Prefabs and Load Levels!
+Start a Server and Connect to it using the ``Network`` class!<br>
+Use ``NetworkView`` for your networked gameobjects, ``IObservable`` for syncing data, ``RPC``s to send functions remotely over the network!<br>
+Spawn ``NetworkView`` Prefabs using the ``PrefabPool`` and Load Levels using the ``NetSceneManager`` inside of the ``Network`` class!<br>
 
 # Credits
 

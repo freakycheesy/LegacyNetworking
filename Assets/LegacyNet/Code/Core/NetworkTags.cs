@@ -2,13 +2,14 @@ namespace LegacyNetworking
 {
     public enum NetworkTags {
         ServerId = -1,
-        Group = 1,  
     }
     public enum NetworkMessages : ushort {
         SceneMessage,
         SpawnMessage,
         RpcMessage,
         StreamMessage,
+        ChangeOwnerMessage,
+        RequestOwnerMessage,
     }
     public enum NetworkTargets : ushort {
         Target = 0,

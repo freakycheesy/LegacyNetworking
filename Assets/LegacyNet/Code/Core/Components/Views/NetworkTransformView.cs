@@ -18,14 +18,14 @@ namespace LegacyNetworking
             if (_isWriting)
                 return;
             if (syncPosition)
-                transform.position = Vector3.Distance(transform.position, networkPosition) < teleportDistance ? Vector3.MoveTowards(transform.position, networkPosition, Time.deltaTime * teleportDistance) : networkPosition;
+                transform.position = networkPosition;
             if (syncRotation)
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, networkRotation, Time.deltaTime * 100);
+                transform.rotation = networkRotation;
             if (syncScale)
                 transform.localScale = networkScale;
         }
 
-        public void OnSerializeView(ref Message stream, bool isWriting) {
+        public virtual void OnSerializeView(Message stream, bool isWriting) {
             _isWriting = isWriting;
             if (_isWriting) {
                 if (syncPosition)

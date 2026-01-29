@@ -39,6 +39,11 @@ namespace LegacyNetworking {
                 return localClient != null ? localClient.IsConnected : false;
             }
         }
+        public static short localPlayer {
+            get{
+                return (short)(isClient ? localClient.Id : -99);
+            }
+        }
         public static Server localServer {
             get; private set;
         }
@@ -50,7 +55,7 @@ namespace LegacyNetworking {
             localServer.Stop();
         }
         public static void NetStart(ushort port = 8778, ushort maxClients = 16) {
-            localServer.Start(port, maxClients, (byte)NetworkTags.Group);
+            localServer.Start(port, maxClients);
         }
         public static bool NetStartHost(ushort port = 8778, ushort maxClients = 16) {
             NetStart(port, maxClients);
@@ -63,7 +68,35 @@ namespace LegacyNetworking {
             return NetConnect($"{address}:{port}", maxConnectionAttempts);
         }
         public static bool NetConnect(string address, ushort maxConnectionAttempts = 5) {
-            return localClient.Connect(address, maxConnectionAttempts, (byte)NetworkTags.Group);
+            return localClient.Connect(address, maxConnectionAttempts);
+        }
+
+        public static void SendToAll(Message message, short exceptPlayer = -1, bool asHost = false) {
+            if (!isServer)
+                return;
+            if (asHost) {
+                foreach (var connection in localServer.Clients) {
+                    if(connection.Id == localPlayer || connection.Id == exceptPlayer)
+                        continue;
+                    localServer.Send(message, connection);
+                }
+            }
+            else {
+                if(exceptPlayer < 0)
+                    localServer.SendToAll(message);
+                else
+                    localServer.SendToAll(message, (ushort)exceptPlayer);
+            }
+        }
+        public static void Send(Message message, ushort target) {
+            if (!isServer)
+                return;
+            localServer.Send(message, target);
+        }
+        public static void Send(Message message) {
+            if(!isClient)
+                return;
+            localClient.Send(message);
         }
     }
 }

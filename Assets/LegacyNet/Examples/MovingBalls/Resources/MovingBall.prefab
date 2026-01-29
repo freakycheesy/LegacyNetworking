@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2829729886178721828}
   - component: {fileID: 6730208316601244616}
   - component: {fileID: 8022250809389112359}
-  - component: {fileID: 1059265027504529020}
+  - component: {fileID: 7737498264518088825}
   m_Layer: 0
   m_Name: MovingBall
   m_TagString: Untagged
@@ -149,9 +149,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reliability: 0
   ownershipFlag: 0
-  controllerFlag: 0
-  autoFindObservables: 1
---- !u!114 &1059265027504529020
+  _observables: []
+  observableSearch: 0
+--- !u!114 &7737498264518088825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7256149763487131280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45cabb1ecfac8014190835ec4b3b24ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 1245647a28b902048956188c03c28be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncPosition: 1

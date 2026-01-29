@@ -1,4 +1,5 @@
 using Riptide;
+using Riptide.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,31 +7,43 @@ namespace LegacyNetworking {
     public static partial class Network {
         [RuntimeInitializeOnLoadMethod]
         public static void Start() {
-            PrefabPool = new ResourceNetworkPrefabPool();
-            Server = new("LEGACYNET_SERVER");
-            Client = new("LEGACYNET_CLIENT");
+            RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+            localServer = new("LEGACYNET_SERVER");
+            localClient = new("LEGACYNET_CLIENT");
             NetworkMono.DontDestroyOnLoad(new GameObject("Network [Mono]",typeof(NetworkMono)));
+            AllocateViews();
+
+            SceneManager = new LevelNetSceneManager();
+            PrefabPool = new ResourceNetworkPrefabPool();
         }
         private static INetworkPrefabPool prefabPool;
         public static INetworkPrefabPool PrefabPool {
             get => prefabPool;  set {
-                prefabPool.OnDisable();
+                prefabPool?.OnDisable();
                 prefabPool = value;
-                prefabPool.OnEnable();
+                prefabPool?.OnEnable();
             }
         }
-        public static Server Server {
+        private static INetSceneManager sceneManager;
+        public static INetSceneManager SceneManager {
+            get => sceneManager; set {
+                sceneManager = value;
+            }
+        }
+        public static bool isServer => localServer.IsRunning;
+        public static bool isClient => localClient.IsConnected;
+        public static Server localServer {
             get; private set;
         }
-        public static Client Client {
+        public static Client localClient {
             get; private set;
         }
         public static void NetShutdown() {
-            Client.Disconnect();
-            Server.Stop();
+            localClient.Disconnect();
+            localServer.Stop();
         }
         public static void NetStart(ushort port = 8778, ushort maxClients = 16) {
-            Server.Start(port, maxClients, (byte)NetworkHeaders.Group);
+            localServer.Start(port, maxClients, (byte)NetworkTags.Group);
         }
         public static bool NetStartHost(ushort port = 8778, ushort maxClients = 16) {
             NetStart(port, maxClients);
@@ -43,7 +56,13 @@ namespace LegacyNetworking {
             return NetConnect($"{address}:{port}", maxConnectionAttempts);
         }
         public static bool NetConnect(string address, ushort maxConnectionAttempts = 5) {
-            return Client.Connect(address, maxConnectionAttempts, (byte)NetworkHeaders.Group);
+            return localClient.Connect(address, maxConnectionAttempts, (byte)NetworkTags.Group);
+        }
+
+        public static void AllocateViews() {
+            foreach (var networkView in UnityEngine.Object.FindObjectsOfType<NetworkView>()) {
+                AllocateView(networkView);
+            }
         }
     }
 }

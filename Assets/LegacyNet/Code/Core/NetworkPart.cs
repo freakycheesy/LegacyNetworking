@@ -6,24 +6,24 @@ namespace LegacyNetworking
 {
     public static partial class Network
     {
-        public static Action<string, string, LoadSceneMode> SceneLoaded;
-        public static KeyValuePair<string, string> MainScene {
+        public static string MainScene {
             get; set;
         }
-        public static Dictionary<string, string> LoadedScenes = new();
-
 
         public static ushort NextId {
             get; set;
         }
         public static Dictionary<ushort, NetworkView> Views {
             get; set;
-        }
+        } = new();
         public static int AllocateView(NetworkView view) {
+            if (Views.ContainsValue(view)) {
+                return view.viewId;
+            }
             Views.Add(NextId, view);
-            view.ViewID = NextId;
+            view.viewId = NextId;
             NextId++;
-            return view.ViewID;
+            return view.viewId;
         }
 
         public static NetworkView GetView(ushort viewId) {

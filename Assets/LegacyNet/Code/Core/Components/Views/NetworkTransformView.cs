@@ -12,9 +12,12 @@ namespace LegacyNetworking
         private Vector3 networkPosition;
         private Quaternion networkRotation;
         private Vector3 networkScale;
+        private bool _isWriting;
 
         void Update() {
-            if(syncPosition)
+            if (_isWriting)
+                return;
+            if (syncPosition)
                 transform.position = Vector3.Distance(transform.position, networkPosition) < teleportDistance ? Vector3.MoveTowards(transform.position, networkPosition, Time.deltaTime * teleportDistance) : networkPosition;
             if (syncRotation)
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, networkRotation, Time.deltaTime * 100);
@@ -23,7 +26,8 @@ namespace LegacyNetworking
         }
 
         public void OnSerializeView(ref Message stream, bool isWriting) {
-            if (isWriting) {
+            _isWriting = isWriting;
+            if (_isWriting) {
                 if (syncPosition)
                     stream.Add(transform.position);
                 if (syncRotation)
